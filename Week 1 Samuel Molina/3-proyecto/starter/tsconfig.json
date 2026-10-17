@@ -1,0 +1,10 @@
+{
+  "extends": "expo/tsconfig.base",
+  "compilerOptions": {
+    "strict": true,
+    "paths": {
+      "@/*": ["./src/*"]
+    }
+  }
+}
+/* Vale el unico cambio fue el "./src/*" por que no tenia el ./ por que sin eso era una ruta relativa y no la permite */
