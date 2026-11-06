@@ -11,11 +11,12 @@ import {
   View,
   type ListRenderItem,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
+import { CATEGORY_LABELS } from '../data/mockData';
 import { useSavedStore } from '../stores/savedStore';
 import { COLORS, RADIUS, SPACING, TYPOGRAPHY } from '../theme';
 import type { Item } from '../types';
-import { SafeAreaView } from 'react-native-safe-area-context';
 
 // ============================================================
 // SUB-COMPONENTE: SavedItem
@@ -37,7 +38,7 @@ function SavedItem({ item, onRemove }: SavedItemProps): React.JSX.Element {
         <Text style={styles.cardTitle} numberOfLines={1}>
           {item.name}
         </Text>
-        <Text style={styles.cardCategory}>{item.category}</Text>
+        <Text style={styles.cardCategory}>{CATEGORY_LABELS[item.category]}</Text>
         <Text style={styles.cardPrice}>
           ${item.pricePerDay.toLocaleString('es-CO')} / día
         </Text>
@@ -190,7 +191,6 @@ const styles = StyleSheet.create({
   },
   cardCategory: {
     ...TYPOGRAPHY.caption,
-    textTransform: 'capitalize',
   },
   cardPrice: {
     ...TYPOGRAPHY.caption,

@@ -2,7 +2,14 @@
 // Datos de ejemplo genéricos para el proyecto.
 // El estudiante debe reemplazar estos datos con los de su dominio asignado.
 
-import type { Item } from '../types';
+import type { EquipmentCategory, Item } from '../types';
+
+export const CATEGORY_LABELS: Record<EquipmentCategory, string> = {
+  herramientas: 'Herramientas',
+  maquinaria: 'Maquinaria',
+  andamios: 'Andamios',
+  seguridad: 'Seguridad',
+};
 
 export const ITEMS: Item[] = [
   {

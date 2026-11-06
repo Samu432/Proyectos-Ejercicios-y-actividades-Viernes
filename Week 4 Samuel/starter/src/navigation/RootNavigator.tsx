@@ -9,11 +9,9 @@ import { Ionicons } from '@expo/vector-icons';
 import { DetailScreen } from '../screens/DetailScreen';
 import { HomeScreen } from '../screens/HomeScreen';
 import { SavedScreen } from '../screens/SavedScreen';
+import { useSavedStore } from '../stores/savedStore';
 import { COLORS } from '../theme';
 import type { HomeStackParamList, RootTabParamList } from './types';
-
-// TODO: importar el store de guardados para leer el conteo del badge
-// import { useSavedStore } from '../stores/savedStore';
 
 const HomeStack = createNativeStackNavigator<HomeStackParamList>();
 
@@ -29,13 +27,11 @@ function HomeStackNavigator(): React.JSX.Element {
       <HomeStack.Screen
         name="HomeList"
         component={HomeScreen}
-        // TODO: cambiar el título según tu dominio
-        options={{ title: 'Inicio' }}
+        options={{ title: 'Equipos' }}
       />
       <HomeStack.Screen
         name="HomeDetail"
         component={DetailScreen}
-        // Lee el nombre del ítem dinámicamente desde los params
         options={({ route }) => ({ title: route.params.name })}
       />
     </HomeStack.Navigator>
@@ -45,8 +41,8 @@ function HomeStackNavigator(): React.JSX.Element {
 const Tab = createBottomTabNavigator<RootTabParamList>();
 
 export function RootNavigator(): React.JSX.Element {
-  // TODO: leer el conteo de guardados desde el store para el badge
-  // const savedCount = useSavedStore((state) => state.items.length);
+  // Selector específico: solo se re-renderiza cuando cambia el conteo
+  const savedCount = useSavedStore((s) => s.items.length);
 
   return (
     <Tab.Navigator
@@ -55,32 +51,33 @@ export function RootNavigator(): React.JSX.Element {
         tabBarActiveTintColor: COLORS.accent,
         tabBarInactiveTintColor: COLORS.textSecondary,
         tabBarStyle: { backgroundColor: COLORS.surface },
-        // TODO: implementar tabBarIcon para cada pestaña
-        // tabBarIcon: ({ focused, color, size }) => {
-        //   let iconName: keyof typeof Ionicons.glyphMap;
-        //   if (route.name === 'Home') {
-        //     iconName = focused ? 'home' : 'home-outline';
-        //   } else {
-        //     iconName = focused ? 'bookmark' : 'bookmark-outline';
-        //   }
-        //   return <Ionicons name={iconName} size={size} color={color} />;
-        // },
+        tabBarIcon: ({ focused, color, size }) => {
+          let iconName: keyof typeof Ionicons.glyphMap;
+          if (route.name === 'Home') {
+            iconName = focused ? 'construct' : 'construct-outline';
+          } else {
+            iconName = focused ? 'bookmark' : 'bookmark-outline';
+          }
+          return <Ionicons name={iconName} size={size} color={color} />;
+        },
       })}
     >
       <Tab.Screen
         name="Home"
         component={HomeStackNavigator}
-        // TODO: cambiar el label según tu dominio
-        options={{ tabBarLabel: 'Inicio' }}
+        options={{ tabBarLabel: 'Equipos' }}
       />
       <Tab.Screen
         name="Saved"
         component={SavedScreen}
         options={{
-          // TODO: cambiar el label según tu dominio
           tabBarLabel: 'Guardados',
-          // TODO: descomentar y conectar al store para el badge dinámico
-          // tabBarBadge: savedCount > 0 ? savedCount : undefined,
+          // undefined oculta el badge cuando no hay guardados
+          tabBarBadge: savedCount > 0 ? savedCount : undefined,
+          tabBarBadgeStyle: {
+            backgroundColor: COLORS.accent,
+            color: COLORS.background,
+          },
         }}
       />
     </Tab.Navigator>

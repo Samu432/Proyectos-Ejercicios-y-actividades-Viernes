@@ -13,7 +13,7 @@ import {
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useNavigation } from '@react-navigation/native';
 
-import { ITEMS } from '../data/mockData';
+import { CATEGORY_LABELS, ITEMS } from '../data/mockData';
 import { useItemsStore } from '../stores/itemsStore';
 import { useSavedStore } from '../stores/savedStore';
 import { COLORS, RADIUS, SPACING, TYPOGRAPHY } from '../theme';
@@ -33,14 +33,17 @@ interface ItemCardProps {
 
 function ItemCard({ item, onPress }: ItemCardProps): React.JSX.Element {
   // Selectores específicos: cada uno lee solo lo que necesita
-  const isSaved = useSavedStore((s) => s.isItemSaved(item.id));
+  const isSaved = useSavedStore((s) => s.items.some((i) => i.id === item.id));
   const addItem = useSavedStore((s) => s.addItem);
   const removeItem = useSavedStore((s) => s.removeItem);
+
+  // No se puede guardar un equipo no disponible (sí quitarlo si ya estaba)
+  const saveDisabled = !isSaved && !item.available;
 
   const handleToggleSave = (): void => {
     if (isSaved) {
       removeItem(item.id);
-    } else {
+    } else if (item.available) {
       addItem(item);
     }
   };
@@ -59,7 +62,7 @@ function ItemCard({ item, onPress }: ItemCardProps): React.JSX.Element {
         <Text style={styles.cardTitle} numberOfLines={1}>
           {item.name}
         </Text>
-        <Text style={styles.cardCategory}>{item.category}</Text>
+        <Text style={styles.cardCategory}>{CATEGORY_LABELS[item.category]}</Text>
         <Text style={styles.cardPrice}>
           ${item.pricePerDay.toLocaleString('es-CO')} / día
         </Text>
@@ -69,11 +72,22 @@ function ItemCard({ item, onPress }: ItemCardProps): React.JSX.Element {
       </View>
 
       <Pressable
-        style={[styles.saveButton, isSaved && styles.saveButtonActive]}
+        style={[
+          styles.saveButton,
+          isSaved && styles.saveButtonActive,
+          saveDisabled && styles.saveButtonDisabled,
+        ]}
         onPress={handleToggleSave}
+        disabled={saveDisabled}
         testID={`save-button-${item.id}`}
       >
-        <Text style={[styles.saveButtonText, isSaved && styles.saveButtonTextActive]}>
+        <Text
+          style={[
+            styles.saveButtonText,
+            isSaved && styles.saveButtonTextActive,
+            saveDisabled && styles.saveButtonTextDisabled,
+          ]}
+        >
           {isSaved ? 'Quitar' : 'Guardar'}
         </Text>
       </Pressable>
@@ -179,7 +193,6 @@ const styles = StyleSheet.create({
   },
   cardCategory: {
     ...TYPOGRAPHY.caption,
-    textTransform: 'capitalize',
   },
   cardPrice: {
     ...TYPOGRAPHY.caption,
@@ -202,6 +215,10 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.surface,
     borderColor: COLORS.textMuted,
   },
+  saveButtonDisabled: {
+    borderColor: COLORS.border,
+    opacity: 0.5,
+  },
   saveButtonText: {
     ...TYPOGRAPHY.caption,
     color: COLORS.accent,
@@ -209,6 +226,9 @@ const styles = StyleSheet.create({
   },
   saveButtonTextActive: {
     color: COLORS.textSecondary,
+  },
+  saveButtonTextDisabled: {
+    color: COLORS.textMuted,
   },
   emptyText: {
     ...TYPOGRAPHY.body,

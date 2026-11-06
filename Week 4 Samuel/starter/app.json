@@ -4,11 +4,10 @@
     "slug": "week04-zustand",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
     "userInterfaceStyle": "dark",
     "splash": {
       "resizeMode": "contain",
-      "backgroundColor": "#0d1117"
+      "backgroundColor": "#1c1c1e"
     },
     "ios": {
       "supportsTablet": true,
@@ -16,7 +15,7 @@
     },
     "android": {
       "adaptiveIcon": {
-        "backgroundColor": "#0d1117"
+        "backgroundColor": "#1c1c1e"
       },
       "package": "dev.bootcamp.week04zustand"
     },

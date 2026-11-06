@@ -6,6 +6,7 @@ import React from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { useRoute, type RouteProp } from '@react-navigation/native';
 
+import { CATEGORY_LABELS, ITEMS } from '../data/mockData';
 import { useItemsStore } from '../stores/itemsStore';
 import { useSavedStore } from '../stores/savedStore';
 import { COLORS, RADIUS, SPACING, TYPOGRAPHY } from '../theme';
@@ -22,22 +23,35 @@ export function DetailScreen(): React.JSX.Element {
   const route = useRoute<DetailRouteProp>();
   const { id, name } = route.params;
 
-  // Equipo seleccionado en Home (solo se usa si coincide con el id)
+  // Equipo seleccionado en Home; si no coincide con el id, se busca en ITEMS
   const selectedItem = useItemsStore((s) => s.selectedItem);
-  const item: Item | null = selectedItem?.id === id ? selectedItem : null;
+  const item: Item | null =
+    selectedItem?.id === id
+      ? selectedItem
+      : (ITEMS.find((i) => i.id === id) ?? null);
 
   // Selectores específicos del store de guardados
-  const isSaved = useSavedStore((s) => s.isItemSaved(id));
+  const isSaved = useSavedStore((s) => s.items.some((i) => i.id === id));
   const addItem = useSavedStore((s) => s.addItem);
   const removeItem = useSavedStore((s) => s.removeItem);
+
+  // No se puede guardar un equipo no disponible (sí quitarlo si ya estaba)
+  const saveDisabled = !isSaved && !item?.available;
 
   const handleToggleSave = (): void => {
     if (isSaved) {
       removeItem(id);
-    } else if (item) {
+    } else if (item?.available) {
       addItem(item);
     }
   };
+
+  let buttonLabel = '☆  Guardar';
+  if (isSaved) {
+    buttonLabel = '★  Quitar de guardados';
+  } else if (item && !item.available) {
+    buttonLabel = 'No disponible';
+  }
 
   return (
     <View style={styles.container}>
@@ -51,7 +65,7 @@ export function DetailScreen(): React.JSX.Element {
 
         {item ? (
           <>
-            <Text style={styles.category}>{item.category}</Text>
+            <Text style={styles.category}>{CATEGORY_LABELS[item.category]}</Text>
             <Text style={styles.price}>
               ${item.pricePerDay.toLocaleString('es-CO')} / día
             </Text>
@@ -73,13 +87,21 @@ export function DetailScreen(): React.JSX.Element {
         style={({ pressed }) => [
           styles.saveButton,
           isSaved && styles.saveButtonActive,
-          pressed && styles.saveButtonPressed,
+          saveDisabled && styles.saveButtonDisabled,
+          pressed && !saveDisabled && styles.saveButtonPressed,
         ]}
         onPress={handleToggleSave}
+        disabled={saveDisabled}
         testID="save-button"
       >
-        <Text style={[styles.saveButtonText, isSaved && styles.saveButtonTextActive]}>
-          {isSaved ? '★  Quitar de guardados' : '☆  Guardar'}
+        <Text
+          style={[
+            styles.saveButtonText,
+            isSaved && styles.saveButtonTextActive,
+            saveDisabled && styles.saveButtonTextDisabled,
+          ]}
+        >
+          {buttonLabel}
         </Text>
       </Pressable>
     </View>
@@ -126,7 +148,6 @@ const styles = StyleSheet.create({
   },
   category: {
     ...TYPOGRAPHY.caption,
-    textTransform: 'capitalize',
   },
   price: {
     ...TYPOGRAPHY.body,
@@ -161,6 +182,9 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.accent,
     borderColor: COLORS.accent,
   },
+  saveButtonDisabled: {
+    opacity: 0.5,
+  },
   saveButtonPressed: {
     opacity: 0.7,
   },
@@ -171,5 +195,8 @@ const styles = StyleSheet.create({
   },
   saveButtonTextActive: {
     color: COLORS.background,
+  },
+  saveButtonTextDisabled: {
+    color: COLORS.textMuted,
   },
 });

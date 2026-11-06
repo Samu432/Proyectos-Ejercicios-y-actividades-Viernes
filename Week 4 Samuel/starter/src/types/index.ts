@@ -1,6 +1,5 @@
 // src/types/index.ts
 // Interface principal del dominio.
-// TODO: adaptar a tu dominio asignado.
 
 export type EquipmentCategory =
   | 'herramientas'
