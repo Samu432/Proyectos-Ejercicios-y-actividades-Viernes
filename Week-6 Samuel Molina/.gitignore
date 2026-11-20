@@ -1,0 +1,24 @@
+# Week-6 Samuel Molina/.gitignore
+# Archivos y carpetas que NO deben subirse al repositorio.
+
+# Dependencias (se regeneran con pnpm install)
+node_modules/
+
+# Archivos temporales de Expo y builds
+.expo/
+dist/
+web-build/
+
+# Variables de entorno con datos privados
+.env
+.env.*
+
+# Logs
+*.log
+npm-debug.*
+yarn-debug.*
+yarn-error.*
+
+# Sistema operativo
+.DS_Store
+Thumbs.db
