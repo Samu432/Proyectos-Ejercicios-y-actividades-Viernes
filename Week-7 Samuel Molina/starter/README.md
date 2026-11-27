@@ -24,7 +24,7 @@ La app usa MMKV, que necesita código nativo, así que **no funciona en Expo Go*
 
 ### Opción A — Instalar el APK (sin instalar herramientas)
 
-1. Descarga el APK: **[COMPLETAR: enlace al APK]**
+1. Descarga el APK: **https://expo.dev/accounts/samu432/projects/week-07-persistencia-local/builds/5b77fc37-1b4f-42dc-93c6-5b033af56119**
 2. Cópialo a un celular Android e instálalo (permite "instalar apps de orígenes desconocidos" si el celular lo pide).
 3. Abre la app. Necesita internet para la primera carga de datos.
 

@@ -16,6 +16,11 @@
     "android": {
       "package": "dev.ergrato.bootcamp.week07"
     },
-    "newArchEnabled": true
+    "newArchEnabled": true,
+    "extra": {
+      "eas": {
+        "projectId": "18e8775d-e898-4d0c-9ef6-c7ba05549857"
+      }
+    }
   }
 }
