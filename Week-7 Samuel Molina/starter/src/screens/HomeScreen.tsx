@@ -29,7 +29,7 @@ function ItemRow({ item, compact }: ItemRowProps): React.JSX.Element {
     <View style={[styles.row, compact && styles.rowCompact]}>
       <View style={styles.avatar}>
         <Text style={styles.avatarText}>
-          {item.name.charAt(0).toUpperCase()}
+          {(item.name ?? '?').charAt(0).toUpperCase()}
         </Text>
       </View>
       <View style={styles.rowContent}>
@@ -48,7 +48,7 @@ function ItemRow({ item, compact }: ItemRowProps): React.JSX.Element {
           </>
         )}
       </View>
-      <Text style={styles.rowPrice}>${item.pricePerDay}/día</Text>
+      <Text style={styles.rowPrice}>${item.pricePerDay ?? 0}/día</Text>
     </View>
   );
 }
@@ -64,8 +64,8 @@ export function HomeScreen({ navigation }: HomeScreenProps): React.JSX.Element {
     if (!data?.items) return [];
     return [...data.items].sort((a, b) =>
       sortOrder === 'asc'
-        ? a.name.localeCompare(b.name)
-        : b.name.localeCompare(a.name),
+        ? (a.name ?? '').localeCompare(b.name ?? '')
+        : (b.name ?? '').localeCompare(a.name ?? ''),
     );
   }, [data?.items, sortOrder]);
 
