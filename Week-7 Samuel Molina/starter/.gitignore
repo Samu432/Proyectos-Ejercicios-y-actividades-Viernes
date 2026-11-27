@@ -1,0 +1,18 @@
+# Dependencias (se reinstalan con pnpm install)
+node_modules/
+
+# Archivos generados por Expo y por la compilación nativa
+.expo/
+dist/
+web-build/
+android/
+ios/
+
+# Archivos locales y temporales
+local.properties
+.env
+*.log
+.DS_Store
+
+# APK compilado (se comparte por enlace, no dentro del repo)
+*.apk
